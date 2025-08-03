@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://qyqkm5ljb766"]
+
+[ext_resource type="PackedScene" uid="uid://f2eyedpe7kd4" path="res://pieces.tscn" id="1_yj0e1"]
+[ext_resource type="Texture2D" uid="uid://crcok4e6x7bht" path="res://assets/Pieces/rg_19.png" id="2_58s6o"]
+
+[node name="pink_pieces" instance=ExtResource("1_yj0e1")]
+color = "pink"
+
+[node name="sprite2D" parent="." index="0"]
+scale = Vector2(0.19, 0.19)
+texture = ExtResource("2_58s6o")

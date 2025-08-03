@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://cfel5e86a30jf"]
+
+[ext_resource type="PackedScene" uid="uid://f2eyedpe7kd4" path="res://pieces.tscn" id="1_hh6mm"]
+[ext_resource type="Texture2D" uid="uid://xy6thiq73tde" path="res://assets/Pieces/Sword_Icon_64.png" id="2_utevl"]
+
+[node name="yellow_pieces" instance=ExtResource("1_hh6mm")]
+color = "yellow"
+
+[node name="sprite2D" parent="." index="0"]
+scale = Vector2(1, 1)
+texture = ExtResource("2_utevl")

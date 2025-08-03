@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://dgcoiensw4j0"]
+
+[ext_resource type="PackedScene" uid="uid://f2eyedpe7kd4" path="res://pieces.tscn" id="1_837ly"]
+[ext_resource type="Texture2D" uid="uid://bunpjifn4cu8i" path="res://assets/Pieces/shield-icon.png" id="2_wy3fs"]
+
+[node name="orange_pieces" instance=ExtResource("1_837ly")]
+color = "orange"
+
+[node name="sprite2D" parent="." index="0"]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_wy3fs")

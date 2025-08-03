@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://j4ywj4f0tms8"]
+
+[ext_resource type="PackedScene" uid="uid://f2eyedpe7kd4" path="res://pieces.tscn" id="1_nq13d"]
+[ext_resource type="Texture2D" uid="uid://bq57nbwtctrdx" path="res://assets/Pieces/bg_26.png" id="2_b0kps"]
+
+[node name="blu_piece" instance=ExtResource("1_nq13d")]
+color = "blue"
+
+[node name="sprite2D" parent="." index="0"]
+scale = Vector2(0.19, 0.19)
+texture = ExtResource("2_b0kps")
