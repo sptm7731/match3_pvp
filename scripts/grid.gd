@@ -9,6 +9,12 @@ class MatchPlayer:
 	var blues: int = 0
 	var moves: int = 3
 
+
+var p0_labels = {}
+var p1_labels = {}
+
+
+
 var players = [MatchPlayer.new(), MatchPlayer.new()]
 var current_player_index = 0
 
@@ -53,6 +59,59 @@ func _ready():
 	randomize();
 	all_pieces = make2darray();
 	spawn_pieces();
+	
+	var stats_root = get_parent()
+	
+	# Get references to Player 0's labels
+	p0_labels.moves   = stats_root.get_node("player0/moves_Label")
+	p0_labels.hp      = stats_root.get_node("player0/HP_Label")
+	p0_labels.shield  = stats_root.get_node("player0/shield_Label")
+	p0_labels.reds    = stats_root.get_node("player0/reds_Label")
+	p0_labels.greens  = stats_root.get_node("player0/greens_Label")
+	p0_labels.blues   = stats_root.get_node("player0/blues_Label")
+
+	# Get references to Player 1's labels
+	p1_labels.moves   = stats_root.get_node("player1/moves_Label")
+	p1_labels.hp      = stats_root.get_node("player1/HP_Label")
+	p1_labels.shield  = stats_root.get_node("player1/shield_Label")
+	p1_labels.reds    = stats_root.get_node("player1/reds_Label")
+	p1_labels.greens  = stats_root.get_node("player1/greens_Label")
+	p1_labels.blues   = stats_root.get_node("player1/blues_Label")
+	update_stats()
+
+
+func update_stats():
+	var p0 = players[0]
+	var p1 = players[1]
+	
+	var active_color = Color(0, 1, 0)     # green
+	var inactive_color = Color(1, 1, 1)   # white
+
+	p0_labels.moves.text  = "Moves:  %d" % p0.moves
+	p0_labels.hp.text     = "HP:     %d" % p0.health
+	p0_labels.shield.text = "Shield: %d" % p0.shield
+	p0_labels.reds.text   = "Reds:   %d" % p0.reds
+	p0_labels.greens.text = "Greens: %d" % p0.greens
+	p0_labels.blues.text  = "Blues:  %d" % p0.blues
+
+	p1_labels.moves.text  = "Moves:  %d" % p1.moves
+	p1_labels.hp.text     = "HP:     %d" % p1.health
+	p1_labels.shield.text = "Shield: %d" % p1.shield
+	p1_labels.reds.text   = "Reds:   %d" % p1.reds
+	p1_labels.greens.text = "Greens: %d" % p1.greens
+	p1_labels.blues.text  = "Blues:  %d" % p1.blues
+	
+	if current_player_index == 0:
+		_set_labels_color(p0_labels, active_color)
+		_set_labels_color(p1_labels, inactive_color)
+	else:
+		_set_labels_color(p0_labels, inactive_color)
+		_set_labels_color(p1_labels, active_color)
+
+func _set_labels_color(labels, color):
+	labels.moves.modulate = color
+
+
 
 func make2darray():
 	var array =[];
@@ -97,7 +156,7 @@ func pix_2_grid(pixel_x,pixel_y):
 	var new_x = round((pixel_x - x_start)/offset);
 	var new_y = round((pixel_y - y_start)/-offset);
 	return Vector2(new_x,new_y);
-	pass;
+
 
 func is_in_grid(grid_pos):
 	if grid_pos.x >= 0 && grid_pos.x < width:
@@ -281,12 +340,8 @@ func after_refill():
 		current_player_index = 1 - current_player_index  # Toggle
 		players[current_player_index].moves = 3
 		
-	print("Player ", current_player_index, " - Moves: ", players[current_player_index].moves,
-	" | HP: ", players[current_player_index].health,
-	" | Shield", players[current_player_index].shield,
-	" | Reds: ", players[current_player_index].reds,
-	" | Greens: ", players[current_player_index].greens,
-	" | Blues: ", players[current_player_index].blues)
+	update_stats();
+
 
 func _on_destroy_timer_timeout():
 	destroy_matched();
