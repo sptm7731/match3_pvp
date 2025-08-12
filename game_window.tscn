@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://do386yupnffmt"]
+[gd_scene load_steps=11 format=3 uid="uid://do386yupnffmt"]
 
 [ext_resource type="Texture2D" uid="uid://ow0doxq0yveh" path="res://assets/background.jpg" id="1_i1iby"]
 [ext_resource type="Texture2D" uid="uid://bwcsla7c0bfpj" path="res://assets/Screenshot_1.png" id="2_mmv5s"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://crcok4e6x7bht" path="res://assets/Pieces/rg_19.png" id="7_5hxuy"]
 [ext_resource type="Texture2D" uid="uid://dj6eq527oop21" path="res://assets/Pieces/gg_27.png" id="8_4n7pg"]
 [ext_resource type="Texture2D" uid="uid://bq57nbwtctrdx" path="res://assets/Pieces/bg_26.png" id="9_mpjr5"]
+[ext_resource type="Texture2D" uid="uid://bdp5dkywutm0t" path="res://assets/UI/Button Template Orange.png" id="10_becyb"]
 
 [node name="game_window" type="Node2D"]
 
@@ -87,6 +88,7 @@ offset_bottom = 104.0
 position = Vector2(0, -72)
 scale = Vector2(0.08, 0.08)
 texture = ExtResource("4_peqo3")
+flip_h = true
 
 [node name="HP_icon" type="Sprite2D" parent="player0_icons"]
 position = Vector2(0, -40)
@@ -147,6 +149,7 @@ offset_bottom = 104.0
 position = Vector2(0, -72)
 scale = Vector2(0.08, 0.08)
 texture = ExtResource("4_peqo3")
+flip_h = true
 
 [node name="HP_icon" type="Sprite2D" parent="player1_icons"]
 position = Vector2(0, -40)
@@ -172,6 +175,24 @@ texture = ExtResource("8_4n7pg")
 position = Vector2(0, 80)
 scale = Vector2(0.08, 0.08)
 texture = ExtResource("9_mpjr5")
+
+[node name="winner" type="Popup" parent="."]
+transparent_bg = true
+position = Vector2i(512, 144)
+size = Vector2i(250, 150)
+
+[node name="TextureRect" type="TextureRect" parent="winner"]
+offset_right = 250.0
+offset_bottom = 150.0
+texture = ExtResource("10_becyb")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="winner"]
+offset_left = 45.0
+offset_top = 50.0
+offset_right = 125.0
+offset_bottom = 96.0
+scale = Vector2(1.5, 1.5)
 
 [connection signal="timeout" from="destroy_timer" to="grid" method="_on_destroy_timer_timeout"]
 [connection signal="timeout" from="collapse_timer" to="grid" method="_on_collapse_timer_timeout"]

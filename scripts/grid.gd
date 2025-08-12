@@ -55,6 +55,7 @@ var controlling = false;
 
 
 func _ready():
+	#$winner.hide()
 	state = move;
 	randomize();
 	all_pieces = make2darray();
@@ -107,6 +108,16 @@ func update_stats():
 	else:
 		_set_labels_color(p0_labels, inactive_color)
 		_set_labels_color(p1_labels, active_color)
+	
+	if players[1-current_player_index].health == 0:
+		state = wait
+		var winner_index = current_player_index
+		var winner_text = "Player %d Wins!" % (winner_index)
+	
+		var popup = get_parent().get_node("winner")
+		popup.get_node("Label").text = winner_text
+		popup.popup()
+
 
 func _set_labels_color(labels, color):
 	labels.moves.modulate = color
