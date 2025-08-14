@@ -2,7 +2,7 @@ extends Node2D
 
 const MAX_SHIELD = 15
 class MatchPlayer:
-	var health: int = 45
+	var health: int = 3
 	var shield: int = 0
 	var reds: int = 0
 	var greens: int = 0
@@ -52,7 +52,8 @@ var first_click = Vector2(0,0);
 var final_click = Vector2(0,0);
 var controlling = false;
 
-
+#effects
+var particle_effect = preload("res://particleEffect.tscn")
 
 func _ready():
 	#$winner.hide()
@@ -70,6 +71,7 @@ func _ready():
 	p0_labels.reds    = stats_root.get_node("player0/reds_Label")
 	p0_labels.greens  = stats_root.get_node("player0/greens_Label")
 	p0_labels.blues   = stats_root.get_node("player0/blues_Label")
+	p0_labels.wins   = stats_root.get_node("player0/wins_Label")
 
 	# Get references to Player 1's labels
 	p1_labels.moves   = stats_root.get_node("player1/moves_Label")
@@ -78,6 +80,7 @@ func _ready():
 	p1_labels.reds    = stats_root.get_node("player1/reds_Label")
 	p1_labels.greens  = stats_root.get_node("player1/greens_Label")
 	p1_labels.blues   = stats_root.get_node("player1/blues_Label")
+	p1_labels.wins   = stats_root.get_node("player1/wins_Label")
 	update_stats()
 
 
@@ -94,6 +97,7 @@ func update_stats():
 	p0_labels.reds.text   = "Reds:   %d" % p0.reds
 	p0_labels.greens.text = "Greens: %d" % p0.greens
 	p0_labels.blues.text  = "Blues:  %d" % p0.blues
+	p0_labels.wins.text = "Wins: %d" % Global.player0wins
 
 	p1_labels.moves.text  = "Moves:  %d" % p1.moves
 	p1_labels.hp.text     = "HP:     %d" % p1.health
@@ -101,6 +105,7 @@ func update_stats():
 	p1_labels.reds.text   = "Reds:   %d" % p1.reds
 	p1_labels.greens.text = "Greens: %d" % p1.greens
 	p1_labels.blues.text  = "Blues:  %d" % p1.blues
+	p1_labels.wins.text = "Wins: %d" % Global.player1wins
 	
 	if current_player_index == 0:
 		_set_labels_color(p0_labels, active_color)
@@ -109,14 +114,19 @@ func update_stats():
 		_set_labels_color(p0_labels, inactive_color)
 		_set_labels_color(p1_labels, active_color)
 	
-	if players[1-current_player_index].health == 0:
+	if p0.health <= 0 or p1.health <= 0:
 		state = wait
-		var winner_index = current_player_index
+		var winner_index = 0 if p1.health <= 0 else 1
+		if winner_index == 0:
+			Global.player0wins += 1
+		else:
+			Global.player1wins += 1
+		
 		var winner_text = "Player %d Wins!" % (winner_index)
-	
 		var popup = get_parent().get_node("winner")
 		popup.get_node("Label").text = winner_text
-		popup.popup()
+		popup.set_exclusive(true)
+		popup.show()
 
 
 func _set_labels_color(labels, color):
@@ -295,11 +305,17 @@ func destroy_matched():
 					was_matched = true;
 					all_pieces[i][j].queue_free();
 					all_pieces[i][j] = null;
+					make_effect(particle_effect,i,j)
 	move_checked = true;
 	if was_matched:
 		get_parent().get_node("collapse_timer").start();
 	else:
 		swap_back();
+
+func make_effect(effect,column,row):
+	var current = effect.instantiate()
+	current.position = grid_2_pixel(column,row)
+	add_child(current)
 
 func collapse_columns():
 	for i in width:
@@ -364,3 +380,32 @@ func _on_collapse_timer_timeout():
 
 func _on_refill_timer_timeout():
 	refill_columns();
+
+
+func _on_restart_button_pressed():
+	get_tree().reload_current_scene()
+
+
+func _on_reset_button_pressed():
+	# Decrease moves
+	players[current_player_index].moves -= 1
+
+	# Switch player if out of moves
+	if players[current_player_index].moves <= 0:
+		current_player_index = 1 - current_player_index  # Toggle
+		players[current_player_index].moves = 3
+	
+	for i in width:
+		for j in height:
+			if all_pieces[i][j] != null:
+				all_pieces[i][j].queue_free()
+				all_pieces[i][j] = null
+	all_pieces = make2darray()
+	spawn_pieces()
+	
+	update_stats()
+
+
+
+func _on_button_pressed():
+	get_tree().change_scene_to_file("res://game_menu.tscn")

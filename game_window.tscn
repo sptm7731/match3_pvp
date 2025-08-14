@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://do386yupnffmt"]
+[gd_scene load_steps=13 format=3 uid="uid://do386yupnffmt"]
 
 [ext_resource type="Texture2D" uid="uid://ow0doxq0yveh" path="res://assets/background.jpg" id="1_i1iby"]
 [ext_resource type="Texture2D" uid="uid://bwcsla7c0bfpj" path="res://assets/Screenshot_1.png" id="2_mmv5s"]
@@ -10,6 +10,8 @@
 [ext_resource type="Texture2D" uid="uid://dj6eq527oop21" path="res://assets/Pieces/gg_27.png" id="8_4n7pg"]
 [ext_resource type="Texture2D" uid="uid://bq57nbwtctrdx" path="res://assets/Pieces/bg_26.png" id="9_mpjr5"]
 [ext_resource type="Texture2D" uid="uid://bdp5dkywutm0t" path="res://assets/UI/Button Template Orange.png" id="10_becyb"]
+[ext_resource type="Texture2D" uid="uid://cqfr0oooshs3n" path="res://assets/UI/Restart Button.png" id="11_l4e4a"]
+[ext_resource type="Texture2D" uid="uid://b582nyryrvipj" path="res://assets/UI/Quit Button.png" id="12_hr2jv"]
 
 [node name="game_window" type="Node2D"]
 
@@ -78,6 +80,9 @@ layout_mode = 2
 [node name="blues_Label" type="Label" parent="player0"]
 layout_mode = 2
 
+[node name="wins_Label" type="Label" parent="player0"]
+layout_mode = 2
+
 [node name="player0_icons" type="VBoxContainer" parent="."]
 offset_left = 24.0
 offset_top = 104.0
@@ -139,6 +144,9 @@ layout_mode = 2
 [node name="blues_Label" type="Label" parent="player1"]
 layout_mode = 2
 
+[node name="wins_Label" type="Label" parent="player1"]
+layout_mode = 2
+
 [node name="player1_icons" type="VBoxContainer" parent="."]
 offset_left = 1152.0
 offset_top = 104.0
@@ -178,22 +186,53 @@ texture = ExtResource("9_mpjr5")
 
 [node name="winner" type="Popup" parent="."]
 transparent_bg = true
-position = Vector2i(512, 144)
-size = Vector2i(250, 150)
+size = Vector2i(1280, 720)
 
 [node name="TextureRect" type="TextureRect" parent="winner"]
-offset_right = 250.0
-offset_bottom = 150.0
+offset_left = 512.0
+offset_top = 144.0
+offset_right = 762.0
+offset_bottom = 294.0
 texture = ExtResource("10_becyb")
 expand_mode = 1
 
 [node name="Label" type="Label" parent="winner"]
-offset_left = 45.0
-offset_top = 50.0
-offset_right = 125.0
-offset_bottom = 96.0
+offset_left = 557.0
+offset_top = 194.0
+offset_right = 637.0
+offset_bottom = 240.0
 scale = Vector2(1.5, 1.5)
+
+[node name="restart_Button" type="Button" parent="winner"]
+offset_left = 586.0
+offset_top = 300.0
+offset_right = 803.0
+offset_bottom = 513.0
+scale = Vector2(0.5, 0.5)
+icon = ExtResource("11_l4e4a")
+flat = true
+
+[node name="Button" type="Button" parent="winner"]
+offset_left = 586.0
+offset_top = 410.0
+offset_right = 800.0
+offset_bottom = 623.0
+scale = Vector2(0.5, 0.5)
+icon = ExtResource("12_hr2jv")
+flat = true
+
+[node name="reset_Button" type="Button" parent="."]
+offset_left = 576.0
+offset_top = 48.0
+offset_right = 704.0
+offset_bottom = 79.0
+text = "Reset board
+-1moves"
+flat = true
 
 [connection signal="timeout" from="destroy_timer" to="grid" method="_on_destroy_timer_timeout"]
 [connection signal="timeout" from="collapse_timer" to="grid" method="_on_collapse_timer_timeout"]
 [connection signal="timeout" from="refill_timer" to="grid" method="_on_refill_timer_timeout"]
+[connection signal="pressed" from="winner/restart_Button" to="grid" method="_on_restart_button_pressed"]
+[connection signal="pressed" from="winner/Button" to="grid" method="_on_button_pressed"]
+[connection signal="pressed" from="reset_Button" to="grid" method="_on_reset_button_pressed"]
