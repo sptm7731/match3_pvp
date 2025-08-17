@@ -2,7 +2,7 @@ extends Node2D
 
 const MAX_SHIELD = 15
 class MatchPlayer:
-	var health: int = 3
+	var health: int = 45
 	var shield: int = 0
 	var reds: int = 0
 	var greens: int = 0
@@ -30,6 +30,24 @@ var state;
 @export var offset:int;
 @export var y_offset:int;
 
+#power vars
+@export var p_width:int
+@export var p_height:int
+@export var p_x_start:int
+@export var p_y_start:int
+@export var p_offset:int
+@export var p_y_offset:int
+@export var power_spaces_p0: PackedVector2Array
+@export var power_spaces_p1: PackedVector2Array
+
+
+var possible_powers = [
+	preload("res://health_power.tscn"),
+	preload("res://attack_power.tscn"),
+	preload("res://move_power.tscn"),
+	preload("res://shield_power.tscn")
+]
+
 var possible_pieces = [
 	preload("res://yellow_pieces.tscn"),
 	preload("res://green_pieces.tscn"),
@@ -39,6 +57,8 @@ var possible_pieces = [
 	preload("res://yellow_2_pieces.tscn")
 ];
 
+
+var all_powers = [];
 var all_pieces = [];
 
 #swap back pieces
@@ -49,18 +69,34 @@ var last_direction = Vector2(0,0);
 var move_checked = false;
 
 var first_click = Vector2(0,0);
+var first_click_p = Vector2(0,0);
 var final_click = Vector2(0,0);
+var final_click_p = Vector2(0,0);
 var controlling = false;
 
 #effects
 var particle_effect = preload("res://particleEffect.tscn")
+
+#check power spots
+func all_power_positions(place: Vector2) -> bool:
+	return power_spaces_p0.has(place) or power_spaces_p1.has(place)
+
+func current_player_power_positions(place: Vector2) -> bool:
+	if current_player_index == 0:
+		return power_spaces_p0.has(place)
+	else:
+		return power_spaces_p1.has(place)
 
 func _ready():
 	#$winner.hide()
 	state = move;
 	randomize();
 	all_pieces = make2darray();
+	all_powers = make2darray_power();
 	spawn_pieces();
+	if Global.gamemode == 1:
+		spawn_powers();
+	
 	
 	var stats_root = get_parent()
 	
@@ -122,7 +158,7 @@ func update_stats():
 		else:
 			Global.player1wins += 1
 		
-		var winner_text = "Player %d Wins!" % (winner_index)
+		var winner_text = "Player %d Wins!" % (winner_index+1)
 		var popup = get_parent().get_node("winner")
 		popup.get_node("Label").text = winner_text
 		popup.set_exclusive(true)
@@ -142,6 +178,14 @@ func make2darray():
 			array[i].append(null);
 	return array
 
+func make2darray_power():
+	var array =[];
+	for i in p_width:
+		array.append([]);
+		for j in p_height:
+			array[i].append(null);
+	return array
+
 func spawn_pieces():
 	for i in width:
 		for j in height:
@@ -156,6 +200,16 @@ func spawn_pieces():
 			add_child(piece);
 			piece.position = grid_2_pixel(i,j);
 			all_pieces[i][j] = piece;
+
+func spawn_powers():
+	for i in p_width:
+		for j in p_height:
+			if all_power_positions(Vector2(i,j)):
+				var rand = randi_range(0, possible_powers.size()-1)
+				var power = possible_powers[rand].instantiate()
+				add_child(power)
+				power.position = grid_2_pixel_power(i, j)
+				all_powers[i][j] = power
 
 func match_at(i , j , color):
 	if i > 1:
@@ -173,17 +227,43 @@ func grid_2_pixel(column,row):
 	var new_y = y_start+ -offset*row;
 	return Vector2(new_x,new_y);
 
+func grid_2_pixel_power(column,row):
+	var new_x = p_x_start+p_offset*column;
+	var new_y = p_y_start+ -p_offset*row;
+	return Vector2(new_x,new_y);
+
 func pix_2_grid(pixel_x,pixel_y):
 	var new_x = round((pixel_x - x_start)/offset);
 	var new_y = round((pixel_y - y_start)/-offset);
 	return Vector2(new_x,new_y);
 
+func pix_2_grid_power(pixel_x,pixel_y):
+	var new_x = round((pixel_x - p_x_start)/p_offset);
+	var new_y = round((pixel_y - p_y_start)/-p_offset);
+	return Vector2(new_x,new_y);
 
 func is_in_grid(grid_pos):
 	if grid_pos.x >= 0 && grid_pos.x < width:
 		if grid_pos.y >= 0 && grid_pos.y < height:
 			return true;
 	return false;
+
+func is_in_power(grid_pos):
+	if grid_pos.x >= 0 && grid_pos.x < p_width:
+		if grid_pos.y >= 0 && grid_pos.y < p_height:
+			return true;
+	return false;
+
+func click_power():
+	if Input.is_action_just_pressed("UI_click"):
+		if current_player_power_positions(pix_2_grid_power(get_global_mouse_position().x, get_global_mouse_position().y)):
+			first_click_p = pix_2_grid_power(get_global_mouse_position().x, get_global_mouse_position().y)
+	if Input.is_action_just_released("UI_click"):
+		final_click_p = get_global_mouse_position()
+		var grid_pos = pix_2_grid_power(final_click_p.x, final_click_p.y)
+		if first_click_p == grid_pos and current_player_power_positions(grid_pos):
+			activate_power(all_powers[grid_pos.x][grid_pos.y])
+			pass
 
 func click_input():
 	if Input.is_action_just_pressed("UI_click"):
@@ -241,6 +321,8 @@ func click_difference(grid_1,grid_2):
 func _process(delta):
 	if state == move:
 		click_input();
+		if Global.gamemode == 1:
+			click_power();
 
 func find_matches():
 	for i in width:
@@ -260,6 +342,54 @@ func find_matches():
 							match_and_dim(all_pieces[i][j]);
 							match_and_dim(all_pieces[i][j+1]);
 	get_parent().get_node("destroy_timer").start();
+
+func activate_power(item):
+	match item.type:
+		"health":
+			if players[current_player_index].reds >= 3 and players[current_player_index].greens >= 6 and players[current_player_index].blues >= 3:
+				item.matched = true
+				players[current_player_index].health += 3
+				players[current_player_index].reds -= 3
+				players[current_player_index].greens -= 6
+				players[current_player_index].blues -= 3
+				item.dim()
+			else:
+				item.not_possible()
+		"attack":
+			if players[current_player_index].reds >= 6 and players[current_player_index].greens >= 3 and players[current_player_index].blues >= 3:
+				item.matched = true
+				apply_damage(players[1 - current_player_index], 3)
+				players[current_player_index].reds -= 6
+				players[current_player_index].greens -= 3
+				players[current_player_index].blues -= 3
+				item.dim()
+			else:
+				item.not_possible()
+		"shield":
+			if players[current_player_index].reds >= 3 and players[current_player_index].greens >= 3 and players[current_player_index].blues >= 6:
+				item.matched = true
+				add_shield(players[current_player_index], 3)
+				players[current_player_index].reds -= 3
+				players[current_player_index].greens -= 3
+				players[current_player_index].blues -= 6
+				item.dim()
+			else:
+				item.not_possible()
+		"move":
+			if players[current_player_index].reds >= 6 and players[current_player_index].greens >= 6 and players[current_player_index].blues >= 6:
+				item.matched = true
+				players[current_player_index].moves += 1
+				players[current_player_index].reds -= 6
+				players[current_player_index].greens -= 6
+				players[current_player_index].blues -= 6
+				item.dim()
+			else:
+				item.not_possible()
+	update_stats();
+	
+	await get_tree().create_timer(0.5).timeout
+	destroy_power()
+
 
 func is_piece_null(column,row):
 	if all_pieces[column][row] == null:
@@ -295,6 +425,24 @@ func apply_damage(player: MatchPlayer, damage: int):
 		player.shield = 0
 		player.health = max(player.health - leftover, 0)
 
+func destroy_power():
+	var was_matched = false
+	for i in p_width:
+		for j in p_height:
+			if all_powers[i][j] != null and all_powers[i][j].matched:
+				was_matched = true
+				all_powers[i][j].queue_free()
+				all_powers[i][j] = null
+	#this part makes refill stuff. i didnt bother making a new function for it
+	for i in p_width:
+		for j in p_height:
+			if all_powers[i][j] == null and all_power_positions(Vector2(i,j)):
+				var rand = randi_range(0, possible_powers.size()-1)
+				var power = possible_powers[rand].instantiate()
+				add_child(power)
+				power.position = grid_2_pixel_power(i, j)
+				all_powers[i][j] = power
+				make_effect(particle_effect, i-3, j)
 
 func destroy_matched():
 	var was_matched = false;
@@ -364,8 +512,9 @@ func after_refill():
 
 	# Switch player if out of moves
 	if players[current_player_index].moves <= 0:
+		players[current_player_index].moves += 3
 		current_player_index = 1 - current_player_index  # Toggle
-		players[current_player_index].moves = 3
+		#players[current_player_index].moves += 3
 		
 	update_stats();
 
@@ -392,8 +541,8 @@ func _on_reset_button_pressed():
 
 	# Switch player if out of moves
 	if players[current_player_index].moves <= 0:
+		players[current_player_index].moves += 3
 		current_player_index = 1 - current_player_index  # Toggle
-		players[current_player_index].moves = 3
 	
 	for i in width:
 		for j in height:

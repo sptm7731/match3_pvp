@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://qaivp46gj35e"]
+[gd_scene load_steps=5 format=3 uid="uid://qaivp46gj35e"]
 
 [ext_resource type="PackedScene" uid="uid://6skuohllnk5f" path="res://main_menu_panel.tscn" id="1_6egon"]
 [ext_resource type="Script" path="res://scripts/game_menu.gd" id="1_7bpvx"]
 [ext_resource type="PackedScene" uid="uid://byp71ma7myvaw" path="res://settings_panel.tscn" id="2_tpm1h"]
+[ext_resource type="PackedScene" uid="uid://dmn2cxxep6x5b" path="res://game_mode_panel.tscn" id="4_e6nrp"]
 
 [node name="Game_menu" type="Control"]
 layout_mode = 3
@@ -15,6 +16,10 @@ script = ExtResource("1_7bpvx")
 
 [node name="Settings_panel" parent="." instance=ExtResource("2_tpm1h")]
 
+[node name="game_mode_panel" parent="." instance=ExtResource("4_e6nrp")]
+
 [connection signal="play_pressed" from="MainMenuPanel" to="." method="_on_main_menu_panel_play_pressed"]
 [connection signal="settings_pressed" from="MainMenuPanel" to="." method="_on_main_menu_panel_settings_pressed"]
 [connection signal="back_button" from="Settings_panel" to="." method="_on_settings_panel_back_button"]
+[connection signal="normal_mode" from="game_mode_panel" to="." method="_on_game_mode_panel_normal_mode"]
+[connection signal="power_mode" from="game_mode_panel" to="." method="_on_game_mode_panel_power_mode"]

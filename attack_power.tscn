@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://pnn14tlj7o46"]
+
+[ext_resource type="PackedScene" uid="uid://x2hgwiuyyyat" path="res://power.tscn" id="1_l3365"]
+[ext_resource type="Texture2D" uid="uid://cioax476algwd" path="res://assets/powers/image2.png" id="2_f8h1i"]
+
+[node name="attack_power" instance=ExtResource("1_l3365")]
+type = "attack"
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_f8h1i")

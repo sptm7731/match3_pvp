@@ -43,6 +43,14 @@ x_start = 224
 y_start = 660
 offset = 64
 y_offset = 2
+p_width = 16
+p_height = 3
+p_x_start = 40
+p_y_start = 660
+p_offset = 80
+p_y_offset = 2
+power_spaces_p0 = PackedVector2Array(0, 0, 0, 1, 0, 2, 1, 0, 1, 1, 1, 2)
+power_spaces_p1 = PackedVector2Array(14, 0, 14, 1, 14, 2, 15, 0, 15, 1, 15, 2)
 
 [node name="destroy_timer" type="Timer" parent="."]
 wait_time = 0.5
