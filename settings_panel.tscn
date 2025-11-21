@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://byp71ma7myvaw"]
+[gd_scene load_steps=7 format=3 uid="uid://byp71ma7myvaw"]
 
 [ext_resource type="PackedScene" uid="uid://cfwwb566p0uqk" path="res://base_menu_panel.tscn" id="1_yrecc"]
 [ext_resource type="Script" path="res://scripts/settings_panel.gd" id="2_gtrg6"]
 [ext_resource type="Texture2D" uid="uid://bo3sagik7trfg" path="res://assets/UI/image2.png" id="2_xghji"]
 [ext_resource type="Texture2D" uid="uid://c16j0rei5w7pg" path="res://assets/UI/Back Button.png" id="3_covtv"]
 [ext_resource type="Texture2D" uid="uid://bf71bdnbqt7br" path="res://assets/UI/Sound On Button.png" id="4_sees6"]
+[ext_resource type="Texture2D" uid="uid://bo22jgysxdtst" path="res://assets/UI/Sound Off Button.png" id="6_0dpit"]
 
 [node name="Settings_panel" instance=ExtResource("1_yrecc")]
 script = ExtResource("2_gtrg6")
@@ -26,7 +27,9 @@ stretch_mode = 5
 
 [node name="Button2" parent="MarginContainer/Graphic_and_buttons/Buttons" index="1"]
 custom_minimum_size = Vector2(256, 256)
+toggle_mode = true
 texture_normal = ExtResource("4_sees6")
+texture_pressed = ExtResource("6_0dpit")
 ignore_texture_size = true
 stretch_mode = 5
 

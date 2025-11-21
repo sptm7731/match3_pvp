@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://7044mhac15nr"]
+
+[ext_resource type="PackedScene" uid="uid://ew86rbumi0yj" path="res://players.tscn" id="1_mq7v4"]
+[ext_resource type="Texture2D" uid="uid://c3j52gi1wel01" path="res://assets/players/IDLE.png" id="2_sgfme"]
+
+[node name="players" instance=ExtResource("1_mq7v4")]
+
+[node name="Sprite2D" parent="." index="0"]
+texture_filter = 1
+scale = Vector2(5, 5)
+texture = ExtResource("2_sgfme")

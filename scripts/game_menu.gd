@@ -16,10 +16,14 @@ func _on_settings_panel_back_button():
 	$MainMenuPanel.slide_in()
 	$Settings_panel.slide_out()
 
+func _on_settings_panel_sound_change():
+	Global.toggle_music()
 
 func _on_main_menu_panel_play_pressed():
 	$MainMenuPanel.slide_out()
 	$game_mode_panel.slide_in()
+
+
 
 
 func _on_game_mode_panel_normal_mode():

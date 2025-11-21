@@ -1,7 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://do386yupnffmt"]
+[gd_scene load_steps=16 format=3 uid="uid://do386yupnffmt"]
 
-[ext_resource type="Texture2D" uid="uid://ow0doxq0yveh" path="res://assets/background.jpg" id="1_i1iby"]
-[ext_resource type="Texture2D" uid="uid://bwcsla7c0bfpj" path="res://assets/Screenshot_1.png" id="2_mmv5s"]
+[ext_resource type="Texture2D" uid="uid://ulo2tea54dmx" path="res://assets/image10.png" id="1_ujt7n"]
+[ext_resource type="Texture2D" uid="uid://cwtvmotffbe3y" path="res://assets/UI/04.png" id="2_dt4df"]
+[ext_resource type="Texture2D" uid="uid://y0othf4fahk7" path="res://assets/image1.png" id="2_raaim"]
 [ext_resource type="Script" path="res://scripts/grid.gd" id="3_6072u"]
 [ext_resource type="Texture2D" uid="uid://mcwno5foxsqo" path="res://assets/UI/hp.png" id="4_nl4w4"]
 [ext_resource type="Texture2D" uid="uid://ckhb8jskac1xq" path="res://assets/Pieces/yg_27.png" id="4_peqo3"]
@@ -9,23 +10,35 @@
 [ext_resource type="Texture2D" uid="uid://crcok4e6x7bht" path="res://assets/Pieces/rg_19.png" id="7_5hxuy"]
 [ext_resource type="Texture2D" uid="uid://dj6eq527oop21" path="res://assets/Pieces/gg_27.png" id="8_4n7pg"]
 [ext_resource type="Texture2D" uid="uid://bq57nbwtctrdx" path="res://assets/Pieces/bg_26.png" id="9_mpjr5"]
-[ext_resource type="Texture2D" uid="uid://bdp5dkywutm0t" path="res://assets/UI/Button Template Orange.png" id="10_becyb"]
+[ext_resource type="Texture2D" uid="uid://cprhpdvyrw82c" path="res://assets/UI/02.png" id="10_5ut54"]
+[ext_resource type="Texture2D" uid="uid://di380mnqun2ks" path="res://assets/UI/01.png" id="10_10wbx"]
 [ext_resource type="Texture2D" uid="uid://cqfr0oooshs3n" path="res://assets/UI/Restart Button.png" id="11_l4e4a"]
 [ext_resource type="Texture2D" uid="uid://b582nyryrvipj" path="res://assets/UI/Quit Button.png" id="12_hr2jv"]
+[ext_resource type="Texture2D" uid="uid://c4ihk3ypwj6fk" path="res://assets/UI/03.png" id="14_i4ada"]
 
 [node name="game_window" type="Node2D"]
 
 [node name="TextureRect_background" type="TextureRect" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
-texture = ExtResource("1_i1iby")
+offset_right = 1280.0
+offset_bottom = 720.0
+texture = ExtResource("1_ujt7n")
+expand_mode = 1
+
+[node name="TextureRect_timerbg" type="TextureRect" parent="."]
+texture_filter = 1
+offset_left = 500.0
+offset_top = 144.0
+offset_right = 596.0
+offset_bottom = 184.0
+scale = Vector2(3, 3)
+texture = ExtResource("2_dt4df")
 
 [node name="TextureRect_topUI" type="TextureRect" parent="."]
-offset_left = 319.0
+offset_left = 528.0
 offset_top = 15.0
-offset_right = 960.0
+offset_right = 776.0
 offset_bottom = 137.0
-texture = ExtResource("2_mmv5s")
+texture = ExtResource("2_raaim")
 expand_mode = 1
 
 [node name="TextureRect_bottomUI" type="TextureRect" parent="."]
@@ -33,7 +46,8 @@ offset_left = 192.0
 offset_top = 311.0
 offset_right = 1088.0
 offset_bottom = 718.0
-texture = ExtResource("2_mmv5s")
+texture = ExtResource("2_raaim")
+expand_mode = 1
 
 [node name="grid" type="Node2D" parent="."]
 script = ExtResource("3_6072u")
@@ -51,6 +65,8 @@ p_offset = 80
 p_y_offset = 2
 power_spaces_p0 = PackedVector2Array(0, 0, 0, 1, 0, 2, 1, 0, 1, 1, 1, 2)
 power_spaces_p1 = PackedVector2Array(14, 0, 14, 1, 14, 2, 15, 0, 15, 1, 15, 2)
+player0_spawn_position = Vector2(256, 205)
+player1_spawn_position = Vector2(1040, 205)
 
 [node name="destroy_timer" type="Timer" parent="."]
 wait_time = 0.5
@@ -64,6 +80,9 @@ one_shot = true
 wait_time = 0.5
 one_shot = true
 
+[node name="turn_Timer" type="Timer" parent="."]
+autostart = true
+
 [node name="player0" type="VBoxContainer" parent="."]
 offset_left = 48.0
 offset_top = 24.0
@@ -71,24 +90,31 @@ offset_right = 81.0
 offset_bottom = 182.0
 
 [node name="moves_Label" type="Label" parent="player0"]
+modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 
 [node name="HP_Label" type="Label" parent="player0"]
+modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 
 [node name="shield_Label" type="Label" parent="player0"]
+modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 
 [node name="reds_Label" type="Label" parent="player0"]
+modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 
 [node name="greens_Label" type="Label" parent="player0"]
+modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 
 [node name="blues_Label" type="Label" parent="player0"]
+modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 
 [node name="wins_Label" type="Label" parent="player0"]
+modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 
 [node name="player0_icons" type="VBoxContainer" parent="."]
@@ -135,24 +161,31 @@ offset_right = 1208.0
 offset_bottom = 182.0
 
 [node name="moves_Label" type="Label" parent="player1"]
+modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 
 [node name="HP_Label" type="Label" parent="player1"]
+modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 
 [node name="shield_Label" type="Label" parent="player1"]
+modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 
 [node name="reds_Label" type="Label" parent="player1"]
+modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 
 [node name="greens_Label" type="Label" parent="player1"]
+modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 
 [node name="blues_Label" type="Label" parent="player1"]
+modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 
 [node name="wins_Label" type="Label" parent="player1"]
+modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 
 [node name="player1_icons" type="VBoxContainer" parent="."]
@@ -196,15 +229,25 @@ texture = ExtResource("9_mpjr5")
 transparent_bg = true
 size = Vector2i(1280, 720)
 
+[node name="TextureRect2" type="TextureRect" parent="winner"]
+texture_filter = 1
+offset_left = 565.0
+offset_top = 240.0
+offset_right = 715.0
+offset_bottom = 640.0
+texture = ExtResource("10_5ut54")
+
 [node name="TextureRect" type="TextureRect" parent="winner"]
-offset_left = 512.0
+texture_filter = 1
+offset_left = 487.0
 offset_top = 144.0
-offset_right = 762.0
-offset_bottom = 294.0
-texture = ExtResource("10_becyb")
+offset_right = 787.0
+offset_bottom = 309.0
+texture = ExtResource("10_10wbx")
 expand_mode = 1
 
 [node name="Label" type="Label" parent="winner"]
+modulate = Color(0, 0, 0, 1)
 offset_left = 557.0
 offset_top = 194.0
 offset_right = 637.0
@@ -230,17 +273,31 @@ icon = ExtResource("12_hr2jv")
 flat = true
 
 [node name="reset_Button" type="Button" parent="."]
+modulate = Color(0, 0, 0, 1)
 offset_left = 576.0
 offset_top = 48.0
 offset_right = 704.0
 offset_bottom = 79.0
+scale = Vector2(1.2, 1.2)
 text = "Reset board
 -1moves"
 flat = true
 
+[node name="TimerLabel" type="Label" parent="."]
+modulate = Color(0, 0, 0, 1)
+offset_left = 624.0
+offset_top = 176.0
+offset_right = 752.0
+offset_bottom = 236.0
+scale = Vector2(2, 2)
+
+[node name="TurnIndicator" type="Sprite2D" parent="."]
+texture = ExtResource("14_i4ada")
+
 [connection signal="timeout" from="destroy_timer" to="grid" method="_on_destroy_timer_timeout"]
 [connection signal="timeout" from="collapse_timer" to="grid" method="_on_collapse_timer_timeout"]
 [connection signal="timeout" from="refill_timer" to="grid" method="_on_refill_timer_timeout"]
+[connection signal="timeout" from="turn_Timer" to="grid" method="_on_turn_timer_timeout"]
 [connection signal="pressed" from="winner/restart_Button" to="grid" method="_on_restart_button_pressed"]
 [connection signal="pressed" from="winner/Button" to="grid" method="_on_button_pressed"]
 [connection signal="pressed" from="reset_Button" to="grid" method="_on_reset_button_pressed"]

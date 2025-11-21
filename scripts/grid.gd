@@ -2,13 +2,18 @@ extends Node2D
 
 const MAX_SHIELD = 15
 class MatchPlayer:
-	var health: int = 45
+	var health: int = 18
 	var shield: int = 0
 	var reds: int = 0
 	var greens: int = 0
 	var blues: int = 0
 	var moves: int = 3
 
+var turn_time := 30
+var turn_timer_running := true
+var timer_label
+var turn_indicator: Sprite2D
+var indicator_offset := Vector2(0, -120)
 
 var p0_labels = {}
 var p1_labels = {}
@@ -40,6 +45,16 @@ var state;
 @export var power_spaces_p0: PackedVector2Array
 @export var power_spaces_p1: PackedVector2Array
 
+#player vars
+@export var player0_spawn_position: Vector2 = Vector2(100, 100)
+@export var player1_spawn_position: Vector2 = Vector2(900, 100)
+var player0_node: Node2D
+var player1_node: Node2D
+
+var possible_players = [
+	preload("res://player_knight.tscn"),
+	preload("res://player_hunter.tscn")
+]
 
 var possible_powers = [
 	preload("res://health_power.tscn"),
@@ -94,11 +109,17 @@ func _ready():
 	all_pieces = make2darray();
 	all_powers = make2darray_power();
 	spawn_pieces();
+	spawn_players();
 	if Global.gamemode == 1:
 		spawn_powers();
 	
+	turn_indicator = get_parent().get_node("TurnIndicator")
+	turn_indicator.position = player0_node.position + indicator_offset
+	turn_indicator.show()
 	
 	var stats_root = get_parent()
+	timer_label = get_parent().get_node("TimerLabel")
+	timer_label.text = str(turn_time)
 	
 	# Get references to Player 0's labels
 	p0_labels.moves   = stats_root.get_node("player0/moves_Label")
@@ -125,7 +146,7 @@ func update_stats():
 	var p1 = players[1]
 	
 	var active_color = Color(0, 1, 0)     # green
-	var inactive_color = Color(1, 1, 1)   # white
+	var inactive_color = Color(0, 0, 0)   # white
 
 	p0_labels.moves.text  = "Moves:  %d" % p0.moves
 	p0_labels.hp.text     = "HP:     %d" % p0.health
@@ -157,7 +178,7 @@ func update_stats():
 			Global.player0wins += 1
 		else:
 			Global.player1wins += 1
-		
+		turn_timer_running = false
 		var winner_text = "Player %d Wins!" % (winner_index+1)
 		var popup = get_parent().get_node("winner")
 		popup.get_node("Label").text = winner_text
@@ -185,6 +206,24 @@ func make2darray_power():
 		for j in p_height:
 			array[i].append(null);
 	return array
+
+func spawn_players():
+	if Global.player0class >= 0 and Global.player0class < possible_players.size():
+		var player0_scene = possible_players[Global.player0class]
+		player0_node = player0_scene.instantiate()
+		player0_node.position = player0_spawn_position
+		add_child(player0_node)
+	else:
+		push_warning("Invalid player0class: %d" % Global.player0class)
+
+	if Global.player1class >= 0 and Global.player1class < possible_players.size():
+		var player1_scene = possible_players[Global.player1class]
+		player1_node = player1_scene.instantiate()
+		player1_node.position = player1_spawn_position
+		player1_node.scale.x = -abs(player1_node.scale.x)
+		add_child(player1_node)
+	else:
+		push_warning("Invalid player1class: %d" % Global.player1class)
 
 func spawn_pieces():
 	for i in width:
@@ -319,6 +358,8 @@ func click_difference(grid_1,grid_2):
 			swap_pieces(grid_1.x,grid_1.y,Vector2(0,-1));
 
 func _process(delta):
+	if turn_indicator:
+		turn_indicator.position.y += sin(Time.get_ticks_msec() / 200.0) * 0.2
 	if state == move:
 		click_input();
 		if Global.gamemode == 1:
@@ -418,6 +459,18 @@ func add_shield(player: MatchPlayer, amount: int):
 	player.shield = min(player.shield + amount, MAX_SHIELD)
 
 func apply_damage(player: MatchPlayer, damage: int):
+	var player_index = players.find(player)
+
+	if player_index == -1:
+		push_warning("Player not found in player list.")
+		return
+	match player_index:
+		0:
+			if player0_node:
+				player0_node.damaged()
+		1:
+			if player1_node:
+				player1_node.damaged()
 	if player.shield >= damage:
 		player.shield -= damage
 	else:
@@ -442,7 +495,7 @@ func destroy_power():
 				add_child(power)
 				power.position = grid_2_pixel_power(i, j)
 				all_powers[i][j] = power
-				make_effect(particle_effect, i-3, j)
+				#make_effect(particle_effect, i-3, j)
 
 func destroy_matched():
 	var was_matched = false;
@@ -505,7 +558,8 @@ func after_refill():
 					return;
 	state= move;
 	move_checked = false;
-	
+	turn_time = 30
+	timer_label.text = str(turn_time)
 	
 	# Decrease moves
 	players[current_player_index].moves -= 1
@@ -514,10 +568,36 @@ func after_refill():
 	if players[current_player_index].moves <= 0:
 		players[current_player_index].moves += 3
 		current_player_index = 1 - current_player_index  # Toggle
+		update_turn_indicator()
+		
+		#passive_stats()
 		#players[current_player_index].moves += 3
 		
 	update_stats();
 
+func passive_stats():
+	if current_player_index == 0:
+		if Global.player0class == 0 && players[current_player_index].health < 12:
+			add_shield(players[current_player_index], 3)
+		elif Global.player0class == 1 && players[current_player_index].health < 12:
+			players[current_player_index].health += 3
+		elif Global.player0class == 2 && players[current_player_index].health < 12:
+			players[current_player_index].moves += 1
+		elif Global.player0class == 3 && players[current_player_index].health < 12:
+			players[current_player_index].reds += 1
+			players[current_player_index].greens += 1
+			players[current_player_index].blues += 1
+	elif current_player_index == 1:
+		if Global.player1class == 0 && players[current_player_index].health < 12:
+			add_shield(players[current_player_index], 3)
+		elif Global.player1class == 1 && players[current_player_index].health < 12:
+			players[current_player_index].health += 3
+		elif Global.player1class == 2 && players[current_player_index].health < 12:
+			players[current_player_index].moves += 1
+		elif Global.player1class == 3 && players[current_player_index].health < 12:
+			players[current_player_index].reds += 1
+			players[current_player_index].greens += 1
+			players[current_player_index].blues += 1
 
 func _on_destroy_timer_timeout():
 	destroy_matched();
@@ -543,6 +623,11 @@ func _on_reset_button_pressed():
 	if players[current_player_index].moves <= 0:
 		players[current_player_index].moves += 3
 		current_player_index = 1 - current_player_index  # Toggle
+		
+		update_turn_indicator()
+		turn_time = 30
+		timer_label.text = str(turn_time)
+		#passive_stats()
 	
 	for i in width:
 		for j in height:
@@ -554,7 +639,23 @@ func _on_reset_button_pressed():
 	
 	update_stats()
 
-
+func update_turn_indicator():
+	if current_player_index == 0:
+		turn_indicator.position = player0_node.position + indicator_offset
+	else:
+		turn_indicator.position = player1_node.position + indicator_offset
 
 func _on_button_pressed():
 	get_tree().change_scene_to_file("res://game_menu.tscn")
+
+
+func _on_turn_timer_timeout():
+	if !turn_timer_running:
+		return
+	turn_time -= 1
+	timer_label.text = str(turn_time)
+	if turn_time <= 0:
+		apply_damage(players[current_player_index], 3)
+		update_stats()
+		turn_time = 30
+		timer_label.text = str(turn_time)

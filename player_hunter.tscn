@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://i2ycv2ncwar2"]
+
+[ext_resource type="PackedScene" uid="uid://ew86rbumi0yj" path="res://players.tscn" id="1_nfpcp"]
+[ext_resource type="Texture2D" uid="uid://dxsc8fvlu03ga" path="res://assets/players/fde44fa6e01a17f3e075c5a40de0ca7b.png" id="2_udgu6"]
+
+[node name="players" instance=ExtResource("1_nfpcp")]
+
+[node name="Sprite2D" parent="." index="0"]
+scale = Vector2(1, 1)
+texture = ExtResource("2_udgu6")
