@@ -568,6 +568,7 @@ func after_refill():
 	if players[current_player_index].moves <= 0:
 		players[current_player_index].moves += 3
 		current_player_index = 1 - current_player_index  # Toggle
+		turn_sound()
 		update_turn_indicator()
 		
 		#passive_stats()
@@ -624,6 +625,7 @@ func _on_reset_button_pressed():
 		players[current_player_index].moves += 3
 		current_player_index = 1 - current_player_index  # Toggle
 		
+		turn_sound()
 		update_turn_indicator()
 		turn_time = 30
 		timer_label.text = str(turn_time)
@@ -659,3 +661,11 @@ func _on_turn_timer_timeout():
 		update_stats()
 		turn_time = 30
 		timer_label.text = str(turn_time)
+
+func turn_sound():
+	var player := AudioStreamPlayer.new()
+	player.stream = load("res://assets/sounds/notif_sound.mp3")
+	add_child(player)
+	player.play()
+	
+	player.connect("finished", player.queue_free)
