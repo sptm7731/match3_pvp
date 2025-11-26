@@ -1,10 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://buyq3uhyk3qtj"]
 
 [ext_resource type="PackedScene" uid="uid://x2hgwiuyyyat" path="res://power.tscn" id="1_mii16"]
-[ext_resource type="Texture2D" uid="uid://7s2etue3o1dt" path="res://assets/powers/image.png" id="2_1eg6u"]
+[ext_resource type="Texture2D" uid="uid://dojqcod4bmcgn" path="res://assets/powers/healthP.png" id="2_clxq7"]
 
 [node name="health_power" instance=ExtResource("1_mii16")]
 type = "health"
 
 [node name="Sprite2D" parent="." index="0"]
-texture = ExtResource("2_1eg6u")
+texture = ExtResource("2_clxq7")

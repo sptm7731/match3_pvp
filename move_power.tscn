@@ -1,11 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://chdboqt6xvjh0"]
 
 [ext_resource type="PackedScene" uid="uid://x2hgwiuyyyat" path="res://power.tscn" id="1_e2h24"]
-[ext_resource type="Texture2D" uid="uid://dppvgo0cylj5t" path="res://assets/powers/image3.png" id="2_8ntcq"]
+[ext_resource type="Texture2D" uid="uid://jf37fbyu347x" path="res://assets/powers/moveP.png" id="2_orxkk"]
 
 [node name="move_power" instance=ExtResource("1_e2h24")]
 type = "move"
 
 [node name="Sprite2D" parent="." index="0"]
-scale = Vector2(0.833, 0.833)
-texture = ExtResource("2_8ntcq")
+texture = ExtResource("2_orxkk")

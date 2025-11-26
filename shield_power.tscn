@@ -1,10 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://whf7c08lga5n"]
 
 [ext_resource type="PackedScene" uid="uid://x2hgwiuyyyat" path="res://power.tscn" id="1_uj31b"]
-[ext_resource type="Texture2D" uid="uid://bldq3td5v63od" path="res://assets/powers/image4.png" id="2_lreb3"]
+[ext_resource type="Texture2D" uid="uid://dnvvq3jsltojo" path="res://assets/powers/shieldP.png" id="2_yteht"]
 
 [node name="shield_power" instance=ExtResource("1_uj31b")]
 type = "shield"
 
 [node name="Sprite2D" parent="." index="0"]
-texture = ExtResource("2_lreb3")
+texture = ExtResource("2_yteht")
